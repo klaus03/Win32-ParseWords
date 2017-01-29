@@ -26,20 +26,20 @@ is($words[2], 'zoo');
 is(join(";", @words), qq(4; ;3; ;2; ;1; ;0));
 
 # Big ol' nasty test (thanks, Joerk!)
-$string = 'aaaa"bbbbb" cc\^ cc \^\^\^"dddd" eee\^\^\^"ffff" "gg"';
+$string = 'aaaa"bbbbb" cc^ cc ^^^"dddd" eee^^^"ffff" "gg"';
 
 # First with $keep == 1
 $result = join('|', parse_line('\s+', 1, $string));
-is($result, 'aaaa"bbbbb"|cc\^ cc|\^\^\^"dddd" eee\^\^\^"ffff"|"gg"');
+is($result, 'aaaa"bbbbb"|cc^ cc|^^^"dddd" eee^^^"ffff"|"gg"');
 
 # Now, $keep == 0
 $result = join('|', parse_line('\s+', 0, $string));
-is($result, 'aaaabbbbb|cc cc|\^"dddd eee\^"ffff|gg');
+is($result, 'aaaabbbbb|cc cc|^"dddd eee^"ffff|gg');
 
 # Now test single quote behavior
-$string = 'aaaa"bbbbb" cc\^ cc \^\^\^"dddd\' eee\^\^\^"ffff\' gg';
+$string = 'aaaa"bbbbb" cc^ cc ^^^"dddd\' eee^^^"ffff\' gg';
 $result = join('|', parse_line('\s+', 0, $string));
-is($result, 'aaaabbbbb|cc cc|\^"dddd eee\^\^\^"ffff|gg');
+is($result, 'aaaabbbbb|cc cc|^"dddd eee^^^"ffff|gg');
 
 # Make sure @nested_quotewords does the right thing
 @lists = nested_quotewords('\s+', 0, 'a b c', '1 2 3', 'x y z');
@@ -78,29 +78,27 @@ is(@words, 0);
   # Test for \001 in quoted string
   $result = join('|', parse_line(':', 0, ':"' . "\001" . '":'));
   is($result, "|\1|");
-
 }
 
-# Now test perlish single quote behavior
 Win32::ParseWords::set_perl_squote(1);
-$string = 'aaaa"bbbbb" cc\ cc \^\^\"dddd\' eee\^\^\"\^\'ffff\' gg';
+$string = 'aaaa"bbbbb" cc\ cc ^^\"dddd\' eee^^\"^\'ffff\' gg';
 $result = join('|', parse_line('\s+', 0, $string));
-is($result, 'aaaabbbbb|cc cc|\"dddd eee\^\^"\'ffff|gg');
+is($result, 'aaaabbbbb|cc cc|\"dddd eee^^"\'ffff|gg');
 
 # test whitespace in the delimiters
 @words = quotewords(' ', 1, '4 3 2 1 0');
 is(join(";", @words), qq(4;3;2;1;0));
 
 # [perl #30442] Text::ParseWords does not handle backslashed newline inside quoted text
-$string = qq{"field1"	"field2\^\nstill field2"	"field3"};
+$string = qq{"field1"	"field2^\nstill field2"	"field3"};
 
 $result = join('|', parse_line("\t", 1, $string));
-is($result, qq{"field1"|"field2\^\nstill field2"|"field3"});
+is($result, qq{"field1"|"field2^\nstill field2"|"field3"});
 
 $result = join('|', parse_line("\t", 0, $string));
 is($result, "field1|field2\nstill field2|field3");
 
-$string = qq{"field1"\x{1234}"field2\^\x{1234}still field2"\x{1234}"field3"};
+$string = qq{"field1"\x{1234}"field2^\x{1234}still field2"\x{1234}"field3"};
 $result = join('|', parse_line("\x{1234}", 0, $string));
 is($result, "field1|field2\x{1234}still field2|field3",'Unicode');
 
@@ -112,5 +110,5 @@ is($result, "");
 
 # make sure shellwords strips out leading whitespace and trailng undefs
 # from parse_line, so it's behavior is more like /bin/sh
-$result = join('|', shellwords(" aa \^  \^ bb ", " \^  ", "cc dd ee\^ "));
+$result = join('|', shellwords(" aa ^  ^ bb ", " ^  ", "cc dd ee^ "));
 is($result, "aa| | bb| |cc|dd|ee ");
