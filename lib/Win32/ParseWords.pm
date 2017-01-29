@@ -237,8 +237,6 @@ produces:
   4: <"for>           -- use of a ^ to remove the special meaning of a double-quote
   5: <you>            -- another simple word (note the lack of effect of ^")
 
-=back
-
 Replacing C<quotewords('\s+', 0, q{this   is...})>
 with C<shellwords(q{this   is...})>
 is a simpler way to accomplish the same thing.

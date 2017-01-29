@@ -43,29 +43,29 @@ is($result, 'aaaabbbbb|cc cc|^"dddd eee^^^"ffff|gg');
 
 # Make sure @nested_quotewords does the right thing
 @lists = nested_quotewords('\s+', 0, 'a b c', '1 2 3', 'x y z');
-is (@lists, 3);
-is (@{$lists[0]}, 3);
-is (@{$lists[1]}, 3);
-is (@{$lists[2]}, 3);
+is (scalar(@lists),       3);
+is (scalar(@{$lists[0]}), 3);
+is (scalar(@{$lists[1]}), 3);
+is (scalar(@{$lists[2]}), 3);
 
 # Now test error return
 $string = 'foo bar baz"bach blech boop';
 
 @words = shellwords($string);
-is(@words, 0);
+is(scalar(@words), 0);
 
 @words = parse_line('s+', 0, $string);
-is(@words, 0);
+is(scalar(@words), 0);
 
 @words = quotewords('s+', 0, $string);
-is(@words, 0);
+is(scalar(@words), 0);
 
 {
   # Gonna get some more undefined things back
   no warnings 'uninitialized' ;
 
   @words = nested_quotewords('s+', 0, $string);
-  is(@words, 0);
+  is(scalar(@words), 0);
 
   # Now test empty fields
   $result = join('|', parse_line(':', 0, 'foo::0:"":::'));
@@ -81,9 +81,9 @@ is(@words, 0);
 }
 
 Win32::ParseWords::set_perl_squote(1);
-$string = 'aaaa"bbbbb" cc\ cc ^^\"dddd\' eee^^\"^\'ffff\' gg';
+$string = 'aaaa"bbbbb" cc^ cc ^^^"dddd\' eee^^^"^\'ffff\' gg';
 $result = join('|', parse_line('\s+', 0, $string));
-is($result, 'aaaabbbbb|cc cc|\"dddd eee^^"\'ffff|gg');
+is($result, 'aaaabbbbb|cc cc|^"dddd eee^^"\'ffff|gg');
 
 # test whitespace in the delimiters
 @words = quotewords(' ', 1, '4 3 2 1 0');
