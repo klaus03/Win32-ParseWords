@@ -9,9 +9,13 @@ require Exporter;
 our @ISA         = qw(Exporter);
 our %EXPORT_TAGS = ();
 our @EXPORT      = qw(shellwords quotewords nested_quotewords parse_line);
-our @EXPORT_OK   = qw(old_shellwords);
+our @EXPORT_OK   = qw(old_shellwords set_perl_squote);
 
-our $PERL_SINGLE_QUOTE;
+my $PERL_SINGLE_QUOTE = 0;
+
+sub set_perl_squote {
+    $PERL_SINGLE_QUOTE = $_[0];
+}
 
 sub shellwords {
     my (@lines) = @_;

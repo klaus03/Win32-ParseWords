@@ -5,6 +5,8 @@ use Test::More tests => 27;
 
 use_ok('Win32::ParseWords');
 
+my (@words, $string, $result, @lists);
+
 @words = shellwords(qq(foo "bar quiz" zoo));
 is($words[0], 'foo');
 is($words[1], 'bar quiz');
@@ -80,7 +82,7 @@ is(@words, 0);
 }
 
 # Now test perlish single quote behavior
-$Text::ParseWords::PERL_SINGLE_QUOTE = 1;
+Win32::ParseWords::set_perl_squote(1);
 $string = 'aaaa"bbbbb" cc\ cc \^\^\"dddd\' eee\^\^\"\^\'ffff\' gg';
 $result = join('|', parse_line('\s+', 0, $string));
 is($result, 'aaaabbbbb|cc cc|\"dddd eee\^\^"\'ffff|gg');
